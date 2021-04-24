@@ -1,21 +1,18 @@
-"""
-$ pip install -r requirements.txt
-$ uvicorn main:app --reload 
-"""
 
-from fastapi import FastAPI
+import numpy as np
+from fastapi import FastAPI, Path, Query
 
 from helpers import buscar_patente
 
 app = FastAPI()
 
 
-@app.get('/')
+@app.get('/', summary='Inicio')
 def read_root():
 	return {'welcome': 'Home'}
 
-@app.get('/patentes/{patente_id}')
-def get_patente(patente_id: str):
+@app.get('/patentes/{patente_id}', summary='Obtener patente')
+def get_patente(patente_id: str = Path(..., description='Patente o ID')):
 	
 	if patente_id.isnumeric(): # es un ID
 		return buscar_patente(ppu_id=int(patente_id))
@@ -29,5 +26,19 @@ def get_patente(patente_id: str):
 		
 		return p_id or {'error': 'Patente no encontrada'}
 	
-
 	return {'error': 'Patente no cumple con formato'}
+
+@app.get('/sumatoria-matriz', summary='Obtener sumatoria')
+def get_sum_M(*,
+	R: int = Query(..., description='Cantidad de filas', gt=0),
+	C: int = Query(..., description='Cantidad de columnas', gt=0),
+	Z: int = Query(..., description='', gt=0, le=1000000),
+	X: int = Query(..., description='', ge=0),
+	Y: int = Query(..., description='', ge=0)):
+
+	m = np.array([np.arange(Z, R+Z) for _ in range(C)]).T
+	
+	print(m)
+	print(m[:Y, :X])
+
+	return {'sumatoria': int(m[:Y, :X].sum())}
