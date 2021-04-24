@@ -15,7 +15,9 @@ def read_root():
 def get_patente(patente_id: str = Path(..., description='Patente o ID')):
 	
 	if patente_id.isnumeric(): # es un ID
-		return buscar_patente(ppu_id=int(patente_id))
+		ppu_id = int(patente_id)
+		if ppu_id<=0: return {'error': 'El ID de patente debe ser mayor de cero'}
+		return buscar_patente(ppu_id=ppu_id)
 	
 	elif patente_id.isalnum(): # es una patente
 		pnf = [d for d in patente_id]
