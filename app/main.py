@@ -1,8 +1,7 @@
-
 import numpy as np
 from fastapi import FastAPI, Path, Query
 
-from helpers import buscar_patente
+from app.utils.helpers import buscar_patente, validar_formato
 
 app = FastAPI()
 
@@ -12,19 +11,23 @@ def read_root():
 	return {'welcome': 'Home'}
 
 @app.get('/patentes/{patente_id}', summary='Obtener patente')
-def get_patente(patente_id: str = Path(..., description='Patente o ID')):
+def get_patente(*,
+	patente_id: str = Path(..., description='Patente o ID'),
+	brute: bool = Query(False, description='Realizar la búsqueda exhaustiva o calcular')):
 	
 	if patente_id.isnumeric(): # es un ID
 		ppu_id = int(patente_id)
 		if ppu_id<=0: return {'error': 'El ID de patente debe ser mayor de cero'}
-		return buscar_patente(ppu_id=ppu_id)
+		return buscar_patente(ppu_id=ppu_id, brute=brute)
 	
 	elif patente_id.isalnum(): # es una patente
+		vf = validar_formato(patente_id)
+		if vf is not True: return vf 
 		pnf = [d for d in patente_id]
 		lt, nmb = tuple(pnf[:4]), ''.join(pnf[-3:])
 		pnf = (lt, nmb)
 
-		p_id = buscar_patente(ppu=pnf)
+		p_id = buscar_patente(ppu=pnf, brute=brute)
 		
 		return p_id or {'error': 'Patente no encontrada'}
 	
