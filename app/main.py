@@ -17,12 +17,14 @@ def get_patente(*,
 	
 	if patente_id.isnumeric(): # es un ID
 		ppu_id = int(patente_id)
-		if ppu_id<=0: return {'error': 'El ID de patente debe ser mayor de cero'}
+		if ppu_id<1: return {'error': 'El ID de patente debe ser mayor de cero'}
+		
 		return buscar_patente(ppu_id=ppu_id, brute=brute)
 	
 	elif patente_id.isalnum(): # es una patente
 		vf = validar_formato(patente_id)
-		if vf is not True: return vf 
+		if vf is not True: return vf
+		
 		pnf = [d for d in patente_id]
 		lt, nmb = tuple(pnf[:4]), ''.join(pnf[-3:])
 		pnf = (lt, nmb)

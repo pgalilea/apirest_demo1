@@ -7,6 +7,7 @@ def get_patentes():
 	return product(product(letters, repeat=4), [f'{n:03}' for n in range(1000)])
 
 def buscar_patente(ppu=None, ppu_id=None, brute=False):
+	"""Buscar una patente o un id, ya sea por búsqueda exhaustiva o cálculo."""
 	
 	if ppu:
 		if not brute: return {'patente':f'{"".join(ppu[0])}{ppu[1]}', 'id':calc_id(ppu)}
@@ -17,7 +18,7 @@ def buscar_patente(ppu=None, ppu_id=None, brute=False):
 			i+=1
 
 	elif ppu_id:
-		# if not brute: return calc_ppu(ppu_id)
+		if not brute: return {'patente':calc_ppu(ppu_id), 'id': ppu_id}
 
 		ptt = list(islice(get_patentes(), ppu_id-1, ppu_id))[0]
 
@@ -43,15 +44,36 @@ def calc_id(ppu):
 	return sum(ppu_id) + int(nmb)+1
 
 def calc_ppu(_id):
-	"""
-	Dado un Id, calcula su patente correspondiente.
-	"""
+	"""Dado un Id, calcula su patente correspondiente"""
+	
+	if _id<1: return None
 
-	return {}
+	num_part = f'{(_id-1):03}'[-3:]
+	to_search = int(f'{str(_id)[:-3]}000')
+	lixs = ix_map[to_search]
+
+	letter_part = ''.join([letters[i] for i in lixs])
+
+	print(num_part, letter_part)
+
+	return f'{letter_part}{num_part}'
+
 
 def validar_formato(ppu):
+	print(ppu[4:])
 	if len(ppu)!=7: return {'error': 'El largo de la patente debe ser 7'}
 	elif not ppu[:4].isalpha(): return {'error': 'Los 4 primeros componentes deben ser caracteres'}
-	elif ppu[4:].isnumeric(): return {'error': 'Los últimos 3 dígitos deben ser numéricos'}
+	elif not ppu[4:].isnumeric(): return {'error': 'Los últimos 3 dígitos deben ser numéricos'}
 
 	return True
+
+def create_ix_map(lts):
+	"""."""
+
+	# 26 podría ser reemplazado por len(lts)
+	ixs = product(range(26), repeat=4)
+	ix_map = {sum( (ix[3]*(26**0)*1000, ix[2]*(26**1)*1000, ix[1]*(26**2)*1000, ix[0]*(26**3)*1000) ):ix for ix in ixs}
+	
+	return ix_map
+
+ix_map = create_ix_map(letters)

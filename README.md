@@ -2,6 +2,16 @@
 
 Demo de una API REST utilizando el framework fastapi
 
+- [API REST Demo](#api-rest-demo)
+	- [Ejecutar con Docker](#ejecutar-con-docker)
+		- [Crear la imagen](#crear-la-imagen)
+		- [Correr la imagen](#correr-la-imagen)
+	- [Ejecutar localmente](#ejecutar-localmente)
+		- [Acceder a la documentación](#acceder-a-la-documentación)
+		- [Instalar bibliotecas](#instalar-bibliotecas)
+		- [Iniciar aplicación](#iniciar-aplicación)
+		- [Acceder a la documentación](#acceder-a-la-documentación-1)
+
 ## Ejecutar con Docker
 ### Crear la imagen
 ```sh
@@ -20,17 +30,17 @@ $ docker run -d -p 8084:80 api_demo1
 http://localhost:8084/docs
 ```
 
-### Instalar bibliotecas
+### Instalar bibliotecas
 ```sh
 $ pip install -r requirements.txt
 ```
 
-## Iniciar aplicación
+### Iniciar aplicación
 ```sh
 $ python run.py
 ```
 
-## Acceder a la documentación
+### Acceder a la documentación
 ```
 http://localhost:8000/docs
 ```
